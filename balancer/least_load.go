@@ -88,3 +88,12 @@ func (l *LeastLoad) Done(hostName string) {
 	h.(*host).load--
 	_ = l.heap.DecreaseKeyValue(h)
 }
+func (l *LeastLoad) Value(hostName string) uint64 {
+	l.Lock()
+	defer l.Unlock()
+	if ok := l.heap.GetValue(hostName); ok == nil {
+		return 0
+	}
+	h := l.heap.GetValue(hostName)
+	return h.(*host).load
+}
